@@ -1,0 +1,8 @@
+a href="/cpo"
+    p create new post
+
+section
+    - posts.reverse_each do |posts|
+            article
+                p #{posts["Text"]}
+                img src="/posts/posts#{"Images"}"
