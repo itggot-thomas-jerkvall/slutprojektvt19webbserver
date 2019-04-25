@@ -5,4 +5,7 @@ section
     - posts.reverse_each do |posts|
             article
                 p #{posts["Text"]}
-                img src="/posts/posts#{"Images"}"
+                img src="/img/#{posts["Images"]}"
+                form action="/profile/#{posts["Id"]}/delete" method="post"
+                    button type="submit" Delete
+                br

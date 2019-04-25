@@ -39,7 +39,7 @@ def getposts(id)
     db = SQLite3::Database.new("db/reddit.db")
     db.results_as_hash = true
 
-    result = db.execute("SELECT Text, Image FROM posts WHERE User_Id = ?", id)
+    result = db.execute("SELECT Id, Text, Image FROM posts WHERE User_Id = ?", id)
 
     return result
 end
@@ -49,4 +49,11 @@ def createp(id,text,img)
     db.results_as_hash = true
 
     db.execute("INSERT INTO posts(User_Id, Text, Image) VALUES(?, ?, ?)", id, text, img)
+end
+
+def delete(id)
+    db = SQLite3::Database.new("db/reddit.db")
+    db.results_as_hash = true
+
+    db.execute("DELETE FROM posts WHERE Id = ?", id)
 end

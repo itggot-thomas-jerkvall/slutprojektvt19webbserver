@@ -6,3 +6,9 @@ aside
 
 a href="/profile"
     p profile
+
+section
+    - posts.reverse_each do |posts|
+            article
+                p #{posts["Text"]}
+                img src="/img/#{posts["Images"]}"

@@ -34,9 +34,12 @@ get('/lhome') do
         redirect('/')
     else
         session[:name] = getname(session[:id])
-        slim(:lhome)
+        id = "*"
+        posts = getposts(id)
+        slim(:lhome, locals:{
+            posts: posts
+        })
     end
-    slim(:lhome)
 end
 
 post('/logout') do
@@ -57,5 +60,10 @@ end
 
 post('/createpost') do
     createp(session[:id], params["text"], params["img"])
-    redirect('/cpo')
+    redirect('/profile')
+end
+
+post('/profile/:id/delete') do
+    delete(params["id"])
+    redirect('/profile')
 end
