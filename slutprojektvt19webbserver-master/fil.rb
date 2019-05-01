@@ -57,3 +57,22 @@ def delete(id)
 
     db.execute("DELETE FROM posts WHERE Id = ?", id)
 end
+
+def getallposts()
+    db = SQLite3::Database.new("db/reddit.db")
+    db.results_as_hash = true
+
+    result = db.execute("SELECT Id, Text, Image FROM posts")
+
+    return result
+end
+
+def votes(up, down)
+    db = SQLite3::Database.new("db/reddit.db")
+    db.results_as_hash = true
+    if up == nil
+        result = db.execute("INSERT INTO upvotes(Post_Id, User_Id, Kind)")
+    else
+        result = db.execute()
+    end
+end

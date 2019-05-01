@@ -12,3 +12,9 @@ section
             article
                 p #{posts["Text"]}
                 img src="/img/#{posts["Images"]}"
+                - if session[:id] != nil
+                    form action="lhome/#{posts["Id"]}/vote" method="POST"
+                        input type="image" src="img/arrow-up.png" width="20px" height="20px" name="upvote"
+                        input type="image" src="img/arrow-down.png" width="20px" height="20px" name="downvote"
+                p #{posts["votes"]}
+                br

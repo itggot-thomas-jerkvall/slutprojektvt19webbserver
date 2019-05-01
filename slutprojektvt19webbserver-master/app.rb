@@ -34,8 +34,7 @@ get('/lhome') do
         redirect('/')
     else
         session[:name] = getname(session[:id])
-        id = "*"
-        posts = getposts(id)
+        posts = getallposts()
         slim(:lhome, locals:{
             posts: posts
         })
@@ -66,4 +65,9 @@ end
 post('/profile/:id/delete') do
     delete(params["id"])
     redirect('/profile')
+end
+
+post('/lhome/:id/vote') do
+    vote(params["upvote"], params["downvote"])
+    redirect('/lhome')
 end
