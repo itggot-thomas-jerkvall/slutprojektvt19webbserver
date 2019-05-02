@@ -58,21 +58,26 @@ def delete(id)
     db.execute("DELETE FROM posts WHERE Id = ?", id)
 end
 
-def getallposts()
+def getallposts_with_votes()
     db = SQLite3::Database.new("db/reddit.db")
     db.results_as_hash = true
 
-    result = db.execute("SELECT Id, Text, Image FROM posts")
+    result = db.execute("SELECT posts.Id, Text, Image, SUM(upvotes.Kind) AS score FROM posts INNER JOIN upvotes ON posts.Id = upvotes.Post_Id")
 
     return result
 end
 
-def votes(up, down)
+def vote(session, postid, kind)
     db = SQLite3::Database.new("db/reddit.db")
     db.results_as_hash = true
-    if up == nil
-        result = db.execute("INSERT INTO upvotes(Post_Id, User_Id, Kind)")
-    else
-        result = db.execute()
+    if db.execute("SELECT Kind FROM upvotes WHERE User_Id = ?", session) == nil
+        db.execute("INSERT INTO upvotes(User_Id, Post_Id, Kind) VALUES(?,?,?)", session, postid, kind)
     end
 end
+
+#def getallkind()
+#    db = SQLite3::Database.new("db/reddit.db")
+#    db.results_as_hash = true
+#    result = db.execute("SELECT SUM(Kind) FROM upvotes")
+#    return result
+#end

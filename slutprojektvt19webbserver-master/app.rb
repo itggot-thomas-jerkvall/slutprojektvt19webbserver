@@ -34,7 +34,7 @@ get('/lhome') do
         redirect('/')
     else
         session[:name] = getname(session[:id])
-        posts = getallposts()
+        posts = getallposts_with_votes()
         slim(:lhome, locals:{
             posts: posts
         })
@@ -67,7 +67,12 @@ post('/profile/:id/delete') do
     redirect('/profile')
 end
 
-post('/lhome/:id/vote') do
-    vote(params["upvote"], params["downvote"])
+get('/lhome/:id/upvote') do
+    vote(session[:id], params["id"], 1)
+    redirect('/lhome')
+end
+
+get('/lhome/:id/downvote') do
+    vote(session[:id], params["id"], -1)
     redirect('/lhome')
 end
