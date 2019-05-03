@@ -47,32 +47,56 @@ post('/logout') do
 end
 
 get('/profile') do
-    posts = getposts(session[:id])
-    slim(:profile, locals:{
-        posts: posts
-    })
+    if loggedin(session[:id]) == false
+        redirect('/')
+    else
+        posts = getposts(session[:id])
+        slim(:profile, locals:{
+            posts: posts
+        })
+    end
 end
 
 get('/cpo') do
-    slim(:cpo)
+    if loggedin(session[:id]) == false
+        redirect('/')
+    else
+        slim(:cpo)
+    end
 end
 
 post('/createpost') do
-    createp(session[:id], params["text"], params["img"])
-    redirect('/profile')
+    if loggedin(session[:id]) == false
+        redirect('/')
+    else
+        createp(session[:id], params["text"], params["img"])
+        redirect('/profile')
+    end
 end
 
 post('/profile/:id/delete') do
-    delete(params["id"])
-    redirect('/profile')
+    if loggedin(session[:id]) == false
+        redirect('/')
+    else
+        delete(params["id"])
+        redirect('/profile')
+    end
 end
 
 get('/lhome/:id/upvote') do
-    vote(session[:id], params["id"], 1)
-    redirect('/lhome')
+    if loggedin(session[:id]) == false
+        redirect('/')
+    else
+        vote(session[:id], params["id"], 1)
+        redirect('/lhome')
+    end
 end
 
 get('/lhome/:id/downvote') do
-    vote(session[:id], params["id"], -1)
-    redirect('/lhome')
+    if loggedin(session[:id]) == false
+        redirect('/')
+    else
+        vote(session[:id], params["id"], -1)
+        redirect('/lhome')
+    end
 end
