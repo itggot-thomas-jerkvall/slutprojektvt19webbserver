@@ -45,8 +45,11 @@ end
 post('/created') do
     if params["password"] == params["password2"]
         create_user(params["email"],params["namn"],params["password"])
-    end
     redirect('/')
+    else
+        redirect('/create')
+    end
+    
 end
 
 # Displays the logged in home page with all the articles
