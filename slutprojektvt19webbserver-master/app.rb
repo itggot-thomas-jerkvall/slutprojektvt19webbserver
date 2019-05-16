@@ -43,7 +43,9 @@ end
 #
 # @see MyModule#create_user
 post('/created') do
-    create_user(params["email"],params["namn"],params["password"])
+    if params["password"] == params["password2"]
+        create_user(params["email"],params["namn"],params["password"])
+    end
     redirect('/')
 end
 
