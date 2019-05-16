@@ -81,6 +81,29 @@ module MyModule
         end
     end
 
+    def getsinglepost(id)
+        db = SQLite3::Database.new("db/reddit.db")
+        db.results_as_hash = true
+        result = db.execute("SELECT Id, Text, Image FROM posts WHERE posts.Id=?", id)
+        return result
+    end
+
+    def update(id, text, image)
+        db = SQLite3::Database.new("db/reddit.db")
+        db.results_as_hash = true
+        db.execute("UPDATE posts SET Text = ?, Image = ? WHERE Id = ?", text, image, id)
+    end
+    
+    def corlog(id, post)
+        db = SQLite3::Database.new("db/reddit.db")
+        db.results_as_hash = true
+        result = db.execute("SELECT User_Id FROM posts WHERE Id = ?", post)
+        if id = result.first
+            return true
+        else
+            return false
+        end
+    end
     #def getallkind()
     #    db = SQLite3::Database.new("db/reddit.db")
     #    db.results_as_hash = true

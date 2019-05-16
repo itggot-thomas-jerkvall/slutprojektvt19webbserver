@@ -43,11 +43,11 @@ end
 #
 # @see MyModule#create_user
 post('/created') do
-    if params["password"] == params["password2"]
+    if params["email"].length > 0 && params["password"] == params["password2"] && params["password"].length > 0
         create_user(params["email"],params["namn"],params["password"])
-    redirect('/')
+        redirect('/')
     else
-        redirect('/create')
+        redirect('/error')
     end
     
 end
@@ -108,10 +108,12 @@ end
 post('/createpost') do
     if loggedin(session[:id]) == false
         redirect('/')
+    elsif params["text"].length > 0
+        createp(session[:id], params["text"], params["img"])    
     else
-        createp(session[:id], params["text"], params["img"])
-        redirect('/profile')
+        redirect("/error")
     end
+    redirect('/profile')
 end
 
 # Deletes a post from your profile
@@ -120,7 +122,7 @@ end
 #
 # @see MyModule#delete
 post('/profile/:id/delete') do
-    if loggedin(session[:id]) == false
+    if corlog(session[:id], params["id"]) == false
         redirect('/')
     else
         delete(params["id"])
@@ -154,4 +156,30 @@ get('/lhome/:id/downvote') do
         vote(session[:id], params["id"], -1)
         redirect('/lhome')
     end
+end
+
+get('/profile/:id/edit') do
+    if loggedin(session[:id]) == false
+        redirect('/')
+    else
+        result=getsinglepost(params["id"])
+        slim(:editpost, locals:{
+            post: result
+        })
+    end
+end
+
+post("/update") do
+    if corlog(session[:id], params["post_id"]) == false
+        redirect('/')
+    elsif params["text"].length > 0
+        update(params["post_id"], params["text"], params["img"])
+    else
+        redirect("/error")
+    end
+    redirect('/profile')
+end
+
+get("/error") do
+    slim(:error)
 end
