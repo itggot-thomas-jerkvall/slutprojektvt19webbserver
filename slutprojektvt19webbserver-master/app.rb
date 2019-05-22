@@ -13,6 +13,8 @@ get('/') do
     slim(:index)
 end
 
+
+
 # Attempts login and updates the sessions
 #
 # @params [String] email, The email
@@ -22,7 +24,8 @@ end
 post('/login') do
     variable = logingin(params["email"], params["password"])
     if variable == nil
-        redirect('/')
+        session[:errorcode] = "Is your password and email correct?"
+        redirect('/error')
     else
         session[:id] = variable
         redirect('/lhome')      
@@ -47,6 +50,7 @@ post('/created') do
         create_user(params["email"],params["namn"],params["password"])
         redirect('/')
     else
+        session[:errorcode] = "Is your password correct both times? Have you typed an email?"
         redirect('/error')
     end
     
@@ -58,7 +62,7 @@ end
 # @see MyModule#getallposts_with_votes
 get('/lhome') do
     if loggedin(session[:id]) == false
-        redirect('/')
+        redirect("/")
     else
         session[:name] = getname(session[:id])
         posts = getallposts_with_votes()
@@ -80,7 +84,8 @@ end
 # @see MyModule#getposts
 get('/profile') do
     if loggedin(session[:id]) == false
-        redirect('/')
+        session[:errorcode] = "You have to be logged in to access"
+        redirect('/error')
     else
         posts = getposts(session[:id])
         slim(:profile, locals:{
@@ -93,7 +98,8 @@ end
 #
 get('/cpo') do
     if loggedin(session[:id]) == false
-        redirect('/')
+        session[:errorcode] = "You have to be logged in to access"
+        redirect('/error')
     else
         slim(:cpo)
     end
@@ -107,10 +113,12 @@ end
 # @see MyModule#createp
 post('/createpost') do
     if loggedin(session[:id]) == false
-        redirect('/')
+        session[:errorcode] = "You have to be logged in to access"
+        redirect('/error')
     elsif params["text"].length > 0
         createp(session[:id], params["text"], params["img"])    
     else
+        session[:errorcode] = "You have to have some text"
         redirect("/error")
     end
     redirect('/profile')
@@ -123,7 +131,8 @@ end
 # @see MyModule#delete
 post('/profile/:id/delete') do
     if corlog(session[:id], params["id"]) == false
-        redirect('/')
+        session[:errorcode] = "You cant delete someone elses post"
+        redirect('/error')
     else
         delete(params["id"])
         redirect('/profile')
@@ -137,7 +146,8 @@ end
 # @see MyModule#vote
 get('/lhome/:id/upvote') do
     if loggedin(session[:id]) == false
-        redirect('/')
+        session[:errorcode] = "You have to be logged in to access"
+        redirect('/error')
     else
         vote(session[:id], params["id"], 1)
         redirect('/lhome')
@@ -151,7 +161,8 @@ end
 # @see MyModule#vote
 get('/lhome/:id/downvote') do
     if loggedin(session[:id]) == false
-        redirect('/')
+        session[:errorcode] = "You have to be logged in to access"
+        redirect('/error')
     else
         vote(session[:id], params["id"], -1)
         redirect('/lhome')
@@ -160,7 +171,8 @@ end
 
 get('/profile/:id/edit') do
     if loggedin(session[:id]) == false
-        redirect('/')
+        session[:errorcode] = "You have to be logged in to access"
+        redirect('/error')
     else
         result=getsinglepost(params["id"])
         slim(:editpost, locals:{
@@ -171,10 +183,12 @@ end
 
 post("/update") do
     if corlog(session[:id], params["post_id"]) == false
-        redirect('/')
+        session[:errorcode] = "This is not your post"
+        redirect('/error')
     elsif params["text"].length > 0
         update(params["post_id"], params["text"], params["img"])
     else
+        session[:errorcode] = "You have to have some text"
         redirect("/error")
     end
     redirect('/profile')

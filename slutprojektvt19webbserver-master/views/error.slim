@@ -1,2 +1,3 @@
-h1 nu gjorde du nåt knasigt
-
+-if session[:errorcode] == nil
+    -session[:errorcode] = "Unknown error"
+h1 #{session[:errorcode]}
